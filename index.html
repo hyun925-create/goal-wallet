@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skip Small. Flex Big. | 잔지름 모아 플렉스</title>
+    <!-- Google Fonts for premium typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- 1. SETUP SECTION (초기 설정 화면) -->
+        <section id="setup-section" class="card setup-card active">
+            <header class="app-header">
+                <span class="logo-badge">🌸 Skip Small. Flex Big.</span>
+                <h1>나만의 플렉스<br>목표 설정하기</h1>
+                <p class="subtitle">작은 충동구매를 아껴 큰 위시리스트를 달성해보세요.</p>
+            </header>
+
+            <form id="setup-form" onsubmit="event.preventDefault();">
+                <div class="input-group">
+                    <label for="wish-name">갖고 싶은 물건 이름</label>
+                    <input type="text" id="wish-name" placeholder="예: 샤넬 클래식 백, 맥북 프로" required autocomplete="off">
+                </div>
+
+                <div class="input-group">
+                    <label for="wish-price">목표 금액 (원)</label>
+                    <input type="text" id="wish-price" placeholder="금액을 입력해주세요" required autocomplete="off">
+                </div>
+
+                <!-- 사진 추가 여부 토글 -->
+                <div class="toggle-group">
+                    <div class="toggle-label-wrap">
+                        <span class="toggle-title">위시리스트 사진 추가</span>
+                        <span class="toggle-desc">나를 자극할 선명한 목표 사진을 등록합니다.</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="photo-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <!-- 사진 업로드 필드 (토글 활성화 시 표시) -->
+                <div id="upload-wrapper" class="upload-wrapper hidden">
+                    <div class="image-uploader" id="drop-zone">
+                        <input type="file" id="wish-image" accept="image/*" class="file-input">
+                        <div class="uploader-content" id="uploader-prompt">
+                            <svg class="icon-upload" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 16V8M12 8L9 11M12 8L15 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M3 15V16C3 18.2091 4.79086 20 7 20H17C19.2091 20 21 18.2091 21 16V15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span>클릭하여 사진을 업로드하거나 여기로 끌어다 놓으세요</span>
+                            <span class="info-text">권장 비율 1:1, 최대 5MB</span>
+                        </div>
+                        <div class="image-preview-wrap hidden" id="preview-wrap">
+                            <img id="image-preview" src="" alt="Wishlist Preview">
+                            <button type="button" class="btn-remove-image" id="btn-remove-image" aria-label="이미지 제거">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" id="btn-start" class="btn btn-primary">플렉스 여정 시작하기 🚀</button>
+            </form>
+        </section>
+
+        <!-- 2. DASHBOARD SECTION (메인 대시보드 화면) -->
+        <section id="dashboard-section" class="card dashboard-card">
+            <header class="dashboard-header">
+                <div class="brand-title">
+                    <span class="logo-emoji">🌸</span>
+                    <span class="logo-text">Skip Small. Flex Big.</span>
+                </div>
+                <button type="button" id="btn-reset" class="btn-icon-reset" title="위시리스트 초기화" aria-label="초기화">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21.5 2V6M21.5 6H17.5M21.5 6C20.0829 4.31649 18.0641 3.19793 15.8239 2.80218C13.5837 2.40644 11.2751 2.75928 9.22018 3.80996C7.16521 4.86064 5.50171 6.54131 4.46313 8.61868C3.42456 10.696 3.07849 13.0416 3.47391 15.3409C3.86932 17.6402 4.98064 19.7431 6.65343 21.3533C8.32622 22.9635 10.4502 23.9749 12.7214 24.2467C14.9926 24.5186 17.2652 24.0326 19.2227 22.8573C21.1801 21.682 22.6934 19.8943 23.5 17.75" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </header>
+
+            <!-- 위시리스트 목표 카드 -->
+            <div class="wish-target-card">
+                <div class="wish-image-container" id="dash-image-container">
+                    <!-- 이미지가 없을 때의 디폴트 플레이스홀더 -->
+                    <div class="wish-placeholder" id="dash-placeholder">
+                        <div class="sparkles-decor">
+                            <span class="sparkle">✨</span>
+                            <span class="sparkle">💖</span>
+                            <span class="sparkle">✨</span>
+                        </div>
+                        <svg class="icon-gift" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 12V20C20 20.5304 19.7893 21.0391 19.4142 21.4142C19.0391 21.7893 18.5304 22 18 22H6C5.46957 22 4.96086 21.7893 4.58579 21.4142C4.21071 21.0391 4 20.5304 4 20V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 7H22V12H2V7Z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                            <path d="M12 22V7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M12 7H7.5C6.57174 7 5.6815 6.63125 5.02513 5.97487C4.36875 5.3185 4 4.42826 4 3.5C4 2.57174 4.36875 1.6815 5.02513 1.02513C5.6815 0.36875 6.57174 0 7.5 0C11 0 12 7 12 7Z" fill="currentColor" opacity="0.3" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                            <path d="M12 7H16.5C17.4283 7 18.3185 6.63125 18.9749 5.97487C19.6313 5.3185 20 4.42826 20 3.5C20 2.57174 19.6313 1.6815 18.9749 1.02513C18.3185 0.36875 17.4283 0 16.5 0C13 0 12 7 12 7Z" fill="currentColor" opacity="0.3" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <img id="dash-image" src="" alt="Wishlist Item" class="hidden">
+                </div>
+
+                <div class="wish-info-content">
+                    <h2 id="dash-wish-name" class="wish-item-name">위시리스트 물건</h2>
+                    <!-- 남은 금액 텍스트 -->
+                    <div class="wish-remaining-wrap">
+                        <span class="remaining-prefix">목표까지</span>
+                        <div class="remaining-value">
+                            <span id="dash-remaining-price" class="price-highlight">0</span>원
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 감성적인 프로그레스 로딩 바 -->
+                <div class="progress-section">
+                    <div class="progress-meta">
+                        <span class="progress-percent" id="dash-progress-percent">0%</span>
+                        <span class="progress-ratio" id="dash-progress-ratio">0원 / 0원</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-bar-fill" id="dash-progress-fill">
+                            <div class="progress-glow"></div>
+                            <div class="progress-shimmer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 축하 메시지 영역 (목표 달성 시 노출) -->
+            <div id="celebration-banner" class="celebration-banner hidden">
+                <div class="confetti-icon">🎉</div>
+                <h3>축하합니다! 플렉스 완성!</h3>
+                <p>소중한 티끌을 모아 마침내 목표를 이루어냈어요!</p>
+            </div>
+
+            <!-- 오늘 아낀 충동구매 입력 섹션 -->
+            <div class="savings-input-card">
+                <h3>오늘 아낀 충동구매 💸</h3>
+                <p class="section-desc">사고 싶었지만 꾹 참은 충동구매 금액을 적어주세요.</p>
+                <form id="savings-form" onsubmit="event.preventDefault();">
+                    <div class="savings-form-inner">
+                        <div class="input-wrapper">
+                            <input type="text" id="savings-amount" placeholder="예: 4,500 (커피값)" required autocomplete="off">
+                            <span class="currency-label">원</span>
+                        </div>
+                        <button type="submit" id="btn-save" class="btn btn-save">아낀 금액 누적</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 누적 기록 리스트 섹션 -->
+            <div class="history-card">
+                <div class="history-header">
+                    <h3>아낀 플렉스 저축 내역</h3>
+                    <span class="history-count" id="history-count">총 0회</span>
+                </div>
+                <div class="history-list-wrapper">
+                    <ul class="history-list" id="history-list">
+                        <!-- 동적으로 추가될 내역 리스트 -->
+                        <li class="history-empty">아직 아낀 내역이 없습니다.<br>오늘부터 작은 지출을 아껴보세요!</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 스크립트 연결 -->
+    <script src="app.js"></script>
+</body>
+</html>
